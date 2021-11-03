@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../src/app.module';
 
 describe('auth service functional', () => {
 	let app: INestApplication;
@@ -198,7 +198,7 @@ describe('auth service functional', () => {
                 });
         });
 
-        it('success login, should return access token', () => {
+        it('success login, should return access token with exp time', () => {
             return request(app.getHttpServer())
                 .post('/login')
                 .send({
@@ -207,7 +207,9 @@ describe('auth service functional', () => {
                 })
                 .expect(200)
                 .expect(function (res) {
-                    const accessToken = res.body.accessToken;
+                    const accessToken = res.body.access_token;
+                    const parsedJWT = parseJwt(accessToken);
+                    expect(parsedJWT.exp).toBeTruthy();
                     expect(accessToken).toBeTruthy();
                 });
         });
@@ -222,3 +224,9 @@ describe('auth service functional', () => {
         });
     })
 });
+
+function parseJwt(token) {
+    var base64Payload = token.split('.')[1];
+    var payload = Buffer.from(base64Payload, 'base64');
+    return JSON.parse(payload.toString());
+}
