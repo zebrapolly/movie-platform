@@ -24,11 +24,9 @@ describe('auth service functional', () => {
                 })
                 .expect(400)
                 .expect(function (res) {
-                    expect(res.body).toEqual({
-                        statusCode: 400,
-                        error: "Bad Request",
-                        message: ["username is required"]
-                    })
+                    expect(res.body.statusCode).toEqual(400);
+                    expect(res.body.error).toEqual('Bad Request');
+                    expect(res.body.message).toContain('username must be a string');
                 });
         });
 
@@ -40,15 +38,13 @@ describe('auth service functional', () => {
                 })
                 .expect(400)
                 .expect(function (res) {
-                    expect(res.body).toEqual({
-                        statusCode: 400,
-                        error: "Bad Request",
-                        message: ["password is required"]
-                    })
+                    expect(res.body.statusCode).toEqual(400);
+                    expect(res.body.error).toEqual('Bad Request');
+                    expect(res.body.message).toContain('password must be a string');
                 });
         });
 
-        it('should failed because of password should be less then 10 characters', () => {
+        it('should failed because of password must be less than 10 characters', () => {
             return request(app.getHttpServer())
                 .post('/register')
                 .send({
@@ -57,15 +53,13 @@ describe('auth service functional', () => {
                 })
                 .expect(400)
                 .expect(function (res) {
-                    expect(res.body).toEqual({
-                        statusCode: 400,
-                        error: "Bad Request",
-                        message: ["password should be less then 10 characters"]
-                    })
+                    expect(res.body.statusCode).toEqual(400);
+                    expect(res.body.error).toEqual('Bad Request');
+                    expect(res.body.message).toContain('password must be less than 10 characters');
                 });
         });
 
-        it('should failed because of password should be more then 4 characters', () => {
+        it('should failed because of password must be more than 4 characters', () => {
             return request(app.getHttpServer())
                 .post('/register')
                 .send({
@@ -74,28 +68,24 @@ describe('auth service functional', () => {
                 })
                 .expect(400)
                 .expect(function (res) {
-                    expect(res.body).toEqual({
-                        statusCode: 400,
-                        error: "Bad Request",
-                        message: ["password should be more then 4 characters"]
-                    })
+                    expect(res.body.statusCode).toEqual(400);
+                    expect(res.body.error).toEqual('Bad Request');
+                    expect(res.body.message).toContain('password must be more than 4 characters');
                 });
         });
 
-        it('should failed because of username should start from letter', () => {
+        it('should failed because of username must start from letter', () => {
             return request(app.getHttpServer())
                 .post('/register')
                 .send({
-                    username: 'john',
-                    password: '1'
+                    username: '1john',
+                    password: '13'
                 })
                 .expect(400)
                 .expect(function (res) {
-                    expect(res.body).toEqual({
-                        statusCode: 400,
-                        error: "Bad Request",
-                        message: ["username should start from letter"]
-                    })
+                    expect(res.body.statusCode).toEqual(400);
+                    expect(res.body.error).toEqual('Bad Request');
+                    expect(res.body.message).toContain('username must start from letter');
                 });
         });
 
@@ -108,7 +98,9 @@ describe('auth service functional', () => {
                 })
                 .expect(200)
                 .expect(function (res) {
-                    const accessToken = res.body.accessToken;
+                    const accessToken = res.body.access_token;
+                    const parsedJWT = parseJwt(accessToken);
+                    expect(parsedJWT.exp).toBeTruthy();
                     expect(accessToken).toBeTruthy();
                 });
         });
@@ -132,34 +124,32 @@ describe('auth service functional', () => {
     });
 
 	describe('/login (POST)', () => {
-        it('should failed because of username is required', () => {
+        it('should failed because of incorrect credentials(lack of username)', () => {
             return request(app.getHttpServer())
                 .post('/login')
                 .send({
                     password: 'password'
                 })
-                .expect(400)
+                .expect(401)
                 .expect(function (res) {
                     expect(res.body).toEqual({
-                        statusCode: 400,
-                        error: "Bad Request",
-                        message: ["username is required"]
+                        statusCode: 401,
+                        message: 'Unauthorized'
                     })
                 });
         });
 
-        it('should failed because of password is required', () => {
+        it('should failed because of incorrect credentials(lack of password)', () => {
             return request(app.getHttpServer())
                 .post('/login')
                 .send({
                     username: 'john'
                 })
-                .expect(400)
+                .expect(401)
                 .expect(function (res) {
                     expect(res.body).toEqual({
-                        statusCode: 400,
-                        error: "Bad Request",
-                        message: ["password is required"]
+                        statusCode: 401,
+                        message: 'Unauthorized'
                     })
                 });
         });
@@ -171,12 +161,11 @@ describe('auth service functional', () => {
                     username: 'notExistingUserName',
                     password: 'test'
                 })
-                .expect(404)
+                .expect(401)
                 .expect(function (res) {
                     expect(res.body).toEqual({
-                        statusCode: 400,
-                        error: "Bad Request",
-                        message: ["username or password is incorrect"]
+                        statusCode: 401,
+                        message: 'Unauthorized'
                     })
                 });
         });
@@ -186,14 +175,13 @@ describe('auth service functional', () => {
                 .post('/login')
                 .send({
                     username: 'paul',
-                    password: 'test'
+                    password: 'incorrectPassword'
                 })
-                .expect(404)
+                .expect(401)
                 .expect(function (res) {
                     expect(res.body).toEqual({
-                        statusCode: 404,
-                        error: "Not Found",
-                        message: ["username or password is incorrect"]
+                        statusCode: 401,
+                        message: 'Unauthorized'
                     })
                 });
         });
