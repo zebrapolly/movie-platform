@@ -7,7 +7,7 @@ const config: TypeOrmModuleOptions = {
     username: process.env.TYPEORM_USERNAME,
     password: process.env.TYPEORM_PASSWORD,
     database: process.env.TYPEORM_DATABASE,
-    entities: ['./dist/infrastructure/storage/**/*.model.js'],
+    entities: ['./dist/infrastructure/storage/**/*.model{.ts,.js}'],
     synchronize: false,
     migrations: ['./dist/infrastructure/storage/migration/*.js'],
     cli: {

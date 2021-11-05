@@ -13,6 +13,7 @@ services:
     volumes:
       - ./auth:/usr/src/app
     command: bash -c "npm run typeorm migration:run && npm run start:dev"
+#    command: bash -c "npm run test:functional"
     depends_on:
       - postgres-auth
     environment:

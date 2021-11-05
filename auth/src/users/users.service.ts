@@ -2,13 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { ICreateUser, User } from "../domain";
 import { UserStorageAdapter } from "../infrastructure";
 
-class UserModel {
-    id: number;
-    systemId: string;
-    username: string;
-    password?: string;
-}
-
 @Injectable()
 export class UsersService {
     constructor(

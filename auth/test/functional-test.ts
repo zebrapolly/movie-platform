@@ -117,7 +117,7 @@ describe('auth service functional', () => {
                     expect(res.body).toEqual({
                         statusCode: 400,
                         error: "Bad Request",
-                        message: ["username already exists"]
+                        message: "username already exists"
                     })
                 });
         });
