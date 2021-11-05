@@ -1,0 +1,4 @@
+CREATE DATABASE movie;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE USER movie_app WITH PASSWORD 'movie_app';
+GRANT ALL PRIVILEGES ON DATABASE "movie" to movie_app;

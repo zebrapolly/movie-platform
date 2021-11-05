@@ -1,0 +1,44 @@
+version: "3.9"
+
+networks:
+  common:
+    name: movie-platform
+
+services:
+  auth:
+    build:
+      dockerfile: Dockerfile
+      context: ./auth
+      target: development
+    volumes:
+      - ./auth:/usr/src/app
+    command: bash -c "npm run typeorm migration:run && npm run start:dev"
+    depends_on:
+      - postgres-auth
+    environment:
+      TYPEORM_HOST: postgres-auth
+      TYPEORM_PORT: 5432
+      TYPEORM_USERNAME: auth_app
+      TYPEORM_PASSWORD: auth_app
+      TYPEORM_DATABASE: auth
+      JWT_SECRET: 333hard_to_guess_secret3571
+      JWT_EXPIRATION_TIME: 60s
+      JWT_IGNORE_EXPIRATION: 'true' # TODO change to false!!!
+      PORT: 3000
+    networks:
+      - common
+    ports:
+        - 3000:3000
+  postgres-auth:
+    image: postgres:14.0
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+      APP: auth
+    networks:
+      - common
+    ports:
+      - 5432:5432
+    volumes:
+      - ./database/init-auth.sql:/docker-entrypoint-initdb.d/init.sql

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ICreateUser, User } from "../domain";
+import { UserStorageAdapter } from "../infrastructure";
 
 class UserModel {
     id: number;
@@ -10,32 +11,16 @@ class UserModel {
 
 @Injectable()
 export class UsersService {
-    private readonly users: UserModel[] = [
-        {
-            id: 1,
-            systemId: '234',
-            username: 'john',
-            password: 'changeme',
-        },
-        {
-            id: 2,
-            systemId: '234',
-            username: 'paul',
-            password: 'test',
-        },
-    ];
+    constructor(
+        private readonly userAdapter: UserStorageAdapter
+    ) {
+    }
 
     async findOne(username: string): Promise<User | undefined> {
-        return this.users.find(user => user.username === username);
+        return this.userAdapter.findOne({ username });
     }
 
     async create(params: ICreateUser) {
-        const user = {
-            id: 6,
-            ...params,
-            systemId: 'sdfsf'
-        }
-        this.users.push(user);
-        return user;
+        return this.userAdapter.create(params);
     }
 }
