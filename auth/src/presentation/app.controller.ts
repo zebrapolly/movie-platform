@@ -1,7 +1,8 @@
-import { Controller, Request, Post, UseGuards, HttpCode, UsePipes, ValidationPipe, Body } from '@nestjs/common';
+import { Controller, Request, Post, UseGuards, HttpCode, UsePipes, ValidationPipe, Body, Headers } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
 import { LocalAuthGuard } from "../auth/local-auth.guard";
 import { RegisterDto } from "./dto";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 
 @Controller()
 export class AppController {
@@ -19,5 +20,12 @@ export class AppController {
 	@UsePipes(new ValidationPipe())
 	async register(@Body() registerDto: RegisterDto) {
 		return this.authService.register(registerDto);
+	}
+
+	@Post('/logout')
+	@HttpCode(200)
+	@UseGuards(JwtAuthGuard)
+	async logout(@Headers('Authorization') authHeader: string) {
+		return this.authService.logout(authHeader);
 	}
 }

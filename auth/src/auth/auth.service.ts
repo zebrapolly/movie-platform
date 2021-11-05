@@ -1,14 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { IRegisterUser, User } from "../domain";
 import * as bcrypt from "bcryptjs";
+import { BlStorageAdapter } from "../infrastructure/bl-storage";
 
 @Injectable()
 export class AuthService {
     constructor(
         private usersService: UsersService,
-        private jwtService: JwtService
+        private jwtService: JwtService,
+        private blAdapter: BlStorageAdapter,
     ) {}
 
     async validateUser(username: string, pass: string): Promise<any> {
@@ -32,5 +34,11 @@ export class AuthService {
         const hash = await bcrypt.hash(password, 2);
         const user = await this.usersService.create({ ...rest, password: hash });
         return this.login(user);
+    }
+
+    async logout(bearerHeader: string) {
+        const token = bearerHeader.replace('Bearer ','');
+        await this.blAdapter.set(token);
+        return true;
     }
 }

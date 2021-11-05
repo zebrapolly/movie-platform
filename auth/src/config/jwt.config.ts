@@ -4,7 +4,7 @@ import { registerAs } from "@nestjs/config";
 export default registerAs('jwt', () => ({
     secret: process.env.JWT_SECRET || 'secret',
     signOptions: {
-        expiresIn: process.env.JWT_EXPIRATION_TIME || '60s'
+        expiresIn: process.env.JWT_EXPIRATION_TIME + 's' || '60s'
     },
-    ignoreExpiration: Boolean(process.env.JWT_IGNORE_EXPIRATION || 'true')
+    ignoreExpiration: process.env.JWT_IGNORE_EXPIRATION === 'true'
 }));

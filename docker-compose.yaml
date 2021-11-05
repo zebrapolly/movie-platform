@@ -16,6 +16,7 @@ services:
 #    command: bash -c "npm run test:functional"
     depends_on:
       - postgres-auth
+      - redis
     environment:
       TYPEORM_HOST: postgres-auth
       TYPEORM_PORT: 5432
@@ -23,9 +24,13 @@ services:
       TYPEORM_PASSWORD: auth_app
       TYPEORM_DATABASE: auth
       JWT_SECRET: 333hard_to_guess_secret3571
-      JWT_EXPIRATION_TIME: 60s
-      JWT_IGNORE_EXPIRATION: 'true' # TODO change to false!!!
+      JWT_EXPIRATION_TIME: 60
+      JWT_IGNORE_EXPIRATION: 'false' # TODO change to false!!!
       PORT: 3000
+      REDIS_BL_PRIFIX: BL
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: password123
     networks:
       - common
     ports:
@@ -43,3 +48,11 @@ services:
       - 5432:5432
     volumes:
       - ./database/init-auth.sql:/docker-entrypoint-initdb.d/init.sql
+  redis:
+    image: bitnami/redis:latest
+    networks:
+      - common
+    ports:
+      - 6379:6379
+    environment:
+      - REDIS_PASSWORD=password123
