@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Generated, Column, Index } from 'typeorm';
 import { User } from '../../domain';
 
+// TODO add createdAt
 @Entity('users')
 export class UserModel implements User {
     @PrimaryGeneratedColumn()

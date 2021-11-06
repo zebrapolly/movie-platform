@@ -25,7 +25,7 @@ services:
       TYPEORM_DATABASE: auth
       JWT_SECRET: 333hard_to_guess_secret3571
       JWT_EXPIRATION_TIME: 60
-      JWT_IGNORE_EXPIRATION: 'false' # TODO change to false!!!
+      JWT_IGNORE_EXPIRATION: 'true'
       PORT: 3000
       REDIS_BL_PRIFIX: BL
       REDIS_HOST: redis
@@ -35,19 +35,60 @@ services:
       - common
     ports:
         - 3000:3000
+  movie:
+    build:
+      dockerfile: Dockerfile
+      context: ./movie
+      target: development
+    volumes:
+      - ./movie:/usr/src/app
+    command: bash -c "npm run typeorm:cli -- migration:run && npm run start:dev"
+    #    command: bash -c "npm run test:functional"
+    depends_on:
+      - postgres-movie
+      - redis
+    environment:
+      TYPEORM_HOST: postgres-movie
+      TYPEORM_PORT: 5432
+      TYPEORM_USERNAME: movie_app
+      TYPEORM_PASSWORD: movie_app
+      TYPEORM_DATABASE: movie
+      JWT_SECRET: 333hard_to_guess_secret3571
+      JWT_EXPIRATION_TIME: 60
+      JWT_IGNORE_EXPIRATION: 'true'
+      PORT: 3001
+      REDIS_BL_PRIFIX: BL
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: password123
+    networks:
+      - common
+    ports:
+      - 3001:3001
   postgres-auth:
     image: postgres:14.0
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: db
-      APP: auth
     networks:
       - common
     ports:
-      - 5432:5432
+      - '5432:5432'
     volumes:
       - ./database/init-auth.sql:/docker-entrypoint-initdb.d/init.sql
+  postgres-movie:
+    image: postgres:14.0
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+    networks:
+      - common
+    ports:
+      - '5433:5432'
+    volumes:
+      - ./database/init-movie.sql:/docker-entrypoint-initdb.d/init.sql
   redis:
     image: bitnami/redis:latest
     networks:

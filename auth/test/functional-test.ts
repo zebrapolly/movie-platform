@@ -202,7 +202,7 @@ describe('auth service functional', () => {
                 });
         });
     });
-
+    // TODO move to end-to-end testing
 	describe('/logout (POST)', () => {
 	    it('should return 200', () => {
             return request(app.getHttpServer())
