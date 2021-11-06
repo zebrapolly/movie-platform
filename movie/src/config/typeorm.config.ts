@@ -11,7 +11,6 @@ const config: TypeOrmModuleOptions = {
         __dirname + './../infrastructure/storage/**/*.model{.ts,.js}',
     ],
     synchronize: false,
-    logging: 'all',
     migrations: [__dirname + './../infrastructure/storage/migration/*{.ts,.js}'],
     cli: {
         migrationsDir: './src/infrastructure/storage/migration'
