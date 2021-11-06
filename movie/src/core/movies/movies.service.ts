@@ -26,11 +26,11 @@ export class MoviesService {
   }
 
   findAll() {
-    return `This action returns all movies`;
+    return this.moviesStorage.search({});
   }
 
   findOne(id: string) {
-    return `This action returns a #${id} movie`;
+    return this.moviesStorage.findById(id);
   }
 
   update(id: string, updateMovieDto: MovieUpdateDto) {
@@ -48,6 +48,6 @@ export class MoviesService {
   }
 
   remove(id: string) {
-    return `This action removes a #${id} movie`;
+    return this.moviesStorage.delete(id);
   }
 }

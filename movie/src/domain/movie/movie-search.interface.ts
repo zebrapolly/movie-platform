@@ -1,3 +1,3 @@
 export interface IMovieSearch {
-    readonly name: string;
+    readonly name?: string;
 }

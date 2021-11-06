@@ -15,7 +15,7 @@ export class MoviesStorageAdapter {
     ) {}
 
     findById(id: string) {
-        return this.movieRepository.findOne({ id });
+        return this.movieRepository.findOne({ id }, { relations: ['people', 'people.person', 'people.role', 'genres']});
     }
 
     search(params: IMovieSearch) {
