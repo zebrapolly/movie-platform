@@ -14,6 +14,7 @@ import {
 import { MoviesService } from '../core';
 import { MovieCreateDto, MovieUpdateDto } from './dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { AuthUser } from './jwt.auth-user.decorator';
 
 @Controller('movies')
 export class MoviesController {
@@ -23,8 +24,8 @@ export class MoviesController {
 	@UseGuards(JwtAuthGuard)
 	@UsePipes(new ValidationPipe())
 	@HttpCode(200)
-	create(@Body() createMovieDto: MovieCreateDto) {
-		return this.moviesService.create(createMovieDto);
+	create(@Body() createMovieDto: MovieCreateDto, @AuthUser() { userId }) {
+		return this.moviesService.create({ ...createMovieDto, userId });
 	}
 
 	@Get()

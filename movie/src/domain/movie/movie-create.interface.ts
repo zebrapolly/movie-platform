@@ -7,4 +7,5 @@ export interface IMovieCreate {
 		person: { id: string };
 	}[];
 	readonly genres: { id: string }[];
+	readonly userId: string;
 }

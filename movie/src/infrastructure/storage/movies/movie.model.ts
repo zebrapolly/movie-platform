@@ -2,6 +2,7 @@ import { Movie } from '../../../domain';
 import {
 	Column,
 	Entity,
+	Index,
 	JoinColumn,
 	JoinTable,
 	ManyToMany,
@@ -48,4 +49,8 @@ export class MovieModel implements Movie {
 	})
 	@JoinColumn({ referencedColumnName: 'movie_id' })
 	readonly people: PersonToFilmModel[];
+
+	@Column({ type: 'uuid', name: 'user_id' })
+	@Index()
+	readonly userId: string;
 }

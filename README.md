@@ -21,7 +21,7 @@ with auth/OAuth and movie management features.
     * cast 
     * genre 
     * synopsis
-  - [ ] The film should have a reference to the user who created it
+  - [x] The film should have a reference to the user who created it
   - [ ] Get films with custom filters
     * title 
     * release date 

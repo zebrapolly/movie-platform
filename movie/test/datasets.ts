@@ -79,6 +79,7 @@ export const movie1: Movie = {
 		},
 	],
 	isDeleted: false,
+	userId: faker.datatype.uuid(),
 };
 
 export const movie2: Movie = {
@@ -98,4 +99,5 @@ export const movie2: Movie = {
 		},
 	],
 	isDeleted: false,
+	userId: faker.datatype.uuid(),
 };

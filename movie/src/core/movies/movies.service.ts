@@ -1,21 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { MovieCreateDto, MovieUpdateDto } from '../../presentation/dto';
+import { MovieUpdateDto } from '../../presentation/dto';
 import { MoviesStorageAdapter } from '../../infrastructure';
-import { IMovieCreate, IMovieUpdate } from '../../domain';
+import { IMovieCreate, IMovieCreateInput, IMovieUpdate } from '../../domain';
 
 @Injectable()
 export class MoviesService {
 	constructor(private readonly moviesStorage: MoviesStorageAdapter) {}
-	create(createMovieDto: MovieCreateDto) {
+	create(payload: IMovieCreateInput) {
 		const model: IMovieCreate = {
-			title: createMovieDto.title,
-			synopsis: createMovieDto.synopsis,
-			releaseDate: new Date(createMovieDto.releaseDate),
-			genres: createMovieDto.genres,
-			people: createMovieDto.people.map((item) => ({
+			title: payload.title,
+			synopsis: payload.synopsis,
+			releaseDate: new Date(payload.releaseDate),
+			genres: payload.genres,
+			people: payload.people.map((item) => ({
 				role: { id: item.roleId },
 				person: { id: item.personId },
 			})),
+			userId: payload.userId,
 		};
 		return this.moviesStorage.create(model);
 	}

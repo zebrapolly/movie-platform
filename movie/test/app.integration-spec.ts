@@ -66,7 +66,7 @@ describe('Movie api integration', () => {
 		it('/movies (POST)', () => {
 			const payload = {
 				title: faker.lorem.word(),
-				synopsis: faker.lorem.text(),
+				synopsis: faker.lorem.text(500),
 				releaseDate: faker.date.past().toISOString(),
 				people: [
 					{

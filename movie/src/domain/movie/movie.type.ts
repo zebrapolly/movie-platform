@@ -13,4 +13,5 @@ export type Movie = {
 		role: Role;
 	}[];
 	readonly isDeleted: boolean;
+	readonly userId: string;
 };
