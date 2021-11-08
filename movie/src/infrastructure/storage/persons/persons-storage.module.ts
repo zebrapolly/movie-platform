@@ -4,8 +4,8 @@ import { PersonModel } from './person.model';
 import { PersonsStorageAdapter } from './persons-storage.adapter';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([PersonModel])],
-    providers: [PersonsStorageAdapter],
-    exports: [PersonsStorageAdapter],
+	imports: [TypeOrmModule.forFeature([PersonModel])],
+	providers: [PersonsStorageAdapter],
+	exports: [PersonsStorageAdapter],
 })
 export class PersonsStorageModule {}

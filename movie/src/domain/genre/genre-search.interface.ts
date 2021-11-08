@@ -1,3 +1,3 @@
 export interface IGenreSearch {
-    readonly name: string;
+	readonly name: string;
 }

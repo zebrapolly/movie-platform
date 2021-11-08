@@ -1,3 +1,3 @@
 export interface IRoleCreate {
-    readonly name: string;
+	readonly name: string;
 }

@@ -1,3 +1,3 @@
 export interface IPersonCreate {
-    readonly name: string;
+	readonly name: string;
 }

@@ -1,3 +1,3 @@
 export interface IGenreCreate {
-    readonly name: string;
+	readonly name: string;
 }

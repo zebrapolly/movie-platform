@@ -1,7 +1,7 @@
-import { IsString, IsUUID, Max, MaxLength } from "class-validator";
+import { IsString, IsUUID, Max, MaxLength } from 'class-validator';
 
 export class RoleUpdateDto {
-    @IsString()
-    @MaxLength(30)
-    readonly name: string;
+	@IsString()
+	@MaxLength(30)
+	readonly name: string;
 }

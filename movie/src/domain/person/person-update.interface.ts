@@ -1,3 +1,3 @@
 export interface IPersonUpdate {
-    readonly name: string;
+	readonly name: string;
 }

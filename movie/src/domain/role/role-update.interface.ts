@@ -1,3 +1,3 @@
 export interface IRoleUpdate {
-    readonly name: string;
+	readonly name: string;
 }

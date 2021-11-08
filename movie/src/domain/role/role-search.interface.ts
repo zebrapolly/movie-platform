@@ -1,3 +1,3 @@
 export interface IRoleSearch {
-    readonly name: string;
+	readonly name: string;
 }
