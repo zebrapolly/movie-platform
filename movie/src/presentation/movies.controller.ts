@@ -11,11 +11,15 @@ import {
 	ValidationPipe,
 	HttpCode,
 	Query,
+	Res,
+	UploadedFile,
+	UseInterceptors,
 } from '@nestjs/common';
 import { MoviesService } from '../core';
 import { MovieCreateDto, MovieSearchDto, MovieUpdateDto } from './dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { AuthUser } from './jwt.auth-user.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('movies')
 export class MoviesController {
@@ -34,6 +38,29 @@ export class MoviesController {
 	@UsePipes(new ValidationPipe())
 	findAll(@Query() params: MovieSearchDto) {
 		return this.moviesService.findAll(params);
+	}
+
+	@Get('csv')
+	@UseGuards(JwtAuthGuard)
+	async getCSV(@Res() response) {
+		const file = await this.moviesService.getCSV();
+		response.set({
+			'Content-Type': 'application/octet-stream',
+			'Content-Disposition': 'attachment; filename="export.csv"',
+		});
+		response.charset = 'UTF-8';
+		file.pipe(response);
+	}
+
+	@Post('csv')
+	@UseGuards(JwtAuthGuard)
+	@UseInterceptors(FileInterceptor('file'))
+	async importCSV(
+		@Res() response,
+		@UploadedFile() file: Express.Multer.File,
+		@AuthUser() { userId },
+	) {
+		return this.moviesService.importCSV(file, userId);
 	}
 
 	@Get(':id')

@@ -70,6 +70,10 @@ export class MoviesStorageAdapter {
 		return this.movieRepository.save({ id, isDeleted: true });
 	}
 
+	getAll() {
+		return this.movieRepository.find({});
+	}
+
 	async restore(id: string) {
 		return this.movieRepository.save({ id, isDeleted: false });
 	}

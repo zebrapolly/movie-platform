@@ -1,10 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { MovieSearchDto, MovieUpdateDto } from '../../presentation/dto';
 import { MoviesStorageAdapter } from '../../infrastructure';
 import { IMovieCreate, IMovieCreateInput, IMovieUpdate } from '../../domain';
+import * as csv from 'fast-csv';
+import { Readable } from 'stream';
 
 @Injectable()
 export class MoviesService {
+	private readonly logger = new Logger(MoviesService.name);
 	constructor(private readonly moviesStorage: MoviesStorageAdapter) {}
 	create(payload: IMovieCreateInput) {
 		const model: IMovieCreate = {
@@ -57,5 +60,42 @@ export class MoviesService {
 
 	remove(id: string) {
 		return this.moviesStorage.delete(id);
+	}
+
+	async getCSV() {
+		const data = await this.moviesStorage.getAll();
+		const csvStream = csv.write(data, { headers: true });
+		return csvStream;
+	}
+
+	importCSV(file, userId) {
+		return new Promise((resolve, reject) => {
+			let results = [];
+			const stream = new Readable({
+				encoding: 'utf-8',
+				read() {
+					this.push(file.buffer);
+					this.push(null);
+				},
+			});
+			let csvStream = csv
+				.parse({ headers: true })
+				.on('data', (data) => {
+					const model = {
+						...data,
+						userId,
+						releaseDate: new Date(data.releaseDate),
+					};
+					results.push(this.moviesStorage.create(model));
+				})
+				.on('end', () => {
+					resolve(Promise.all(results).catch((e) => reject(e)));
+				})
+				.on('error', (err) => {
+					reject(new BadRequestException(err.message));
+				});
+			stream.pipe(csvStream);
+			return csvStream;
+		});
 	}
 }
