@@ -8,9 +8,11 @@ import jwtConfig from '../config/jwt.config';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 import { BlStorageModule } from '../infrastructure';
+import { FavouritesController } from './favorites.controller';
 
 @Module({
 	controllers: [
+		FavouritesController,
 		GenresController,
 		MoviesController,
 		RolesController,

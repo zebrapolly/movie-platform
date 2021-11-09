@@ -6,7 +6,7 @@ import { emptyDb, fillDb } from './fill-db';
 import { Connection, getConnectionManager } from 'typeorm';
 import typeormConfig = require('../src/config/typeorm.config');
 import * as faker from 'faker';
-import { genre3, person2, role1 } from './datasets';
+import { genre3, movie1, movie2, movie3, person2, role1 } from './datasets';
 
 describe('Movie api integration', () => {
 	let app: INestApplication;
@@ -160,6 +160,83 @@ describe('Movie api integration', () => {
 						),
 					).toBeTruthy();
 				});
+		});
+	});
+	describe('favourites', () => {
+		beforeEach(async () => {
+			await fillDb(connection);
+		});
+		afterEach(async () => {
+			await emptyDb(connection);
+		});
+		it('/favourites my favourites (get)', () => {
+			return request(app.getHttpServer())
+				.get('/favourites')
+				.set('Authorization', token)
+				.expect(200)
+				.expect(function (res) {
+					expect(res.body.length).toEqual(2);
+				});
+		});
+
+		it('/favourites add movie to my favourites (POST)', () => {
+			return request(app.getHttpServer())
+				.post('/favourites')
+				.set('Authorization', token)
+				.send({ movieId: movie3.id })
+				.expect(200)
+				.expect(function (res) {
+					expect(res.body).toBeTruthy();
+				})
+				.then(() =>
+					request(app.getHttpServer())
+						.get('/favourites')
+						.set('Authorization', token)
+						.expect(200)
+						.expect(function (res) {
+							expect(res.body.length).toEqual(3);
+						}),
+				);
+		});
+
+		it('/favourites add movie to my favourites if it already exists (POST)', () => {
+			return request(app.getHttpServer())
+				.post('/favourites')
+				.set('Authorization', token)
+				.send({ movieId: movie3.id })
+				.expect(200)
+				.expect(function (res) {
+					expect(res.body).toBeTruthy();
+				})
+				.then(() =>
+					request(app.getHttpServer())
+						.get('/favourites')
+						.set('Authorization', token)
+						.expect(200)
+						.expect(function (res) {
+							expect(res.body.length).toEqual(3);
+						}),
+				);
+		});
+
+		it('/favourites delete movie to my favourites (DELETE)', () => {
+			return request(app.getHttpServer())
+				.delete('/favourites')
+				.set('Authorization', token)
+				.send({ movieId: movie1.id })
+				.expect(200)
+				.expect(function (res) {
+					expect(res.body).toBeTruthy();
+				})
+				.then(() =>
+					request(app.getHttpServer())
+						.get('/favourites')
+						.set('Authorization', token)
+						.expect(200)
+						.expect(function (res) {
+							expect(res.body.length).toEqual(1);
+						}),
+				);
 		});
 	});
 });

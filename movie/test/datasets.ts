@@ -116,3 +116,13 @@ export const movie3: Movie = {
 	isDeleted: false,
 	userId: faker.datatype.uuid(),
 };
+
+export const favourites1 = {
+	movieId: movie1.id,
+	userId: 'cd580269-5830-4b7d-955d-804bb4919d09',
+};
+
+export const favourites2 = {
+	movieId: movie2.id,
+	userId: 'cd580269-5830-4b7d-955d-804bb4919d09',
+};

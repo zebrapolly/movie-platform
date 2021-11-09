@@ -4,6 +4,8 @@ import { RoleModel } from '../src/infrastructure/storage/roles/role.model';
 import { PersonModel } from '../src/infrastructure/storage/persons/person.model';
 import { GenreModel } from '../src/infrastructure/storage/genres/genre.model';
 import {
+	favourites1,
+	favourites2,
 	genre1,
 	genre2,
 	genre3,
@@ -20,6 +22,7 @@ import {
 	role3,
 	role4,
 } from './datasets';
+import { FavouritesModel } from '../src/infrastructure/storage/favourites/favourites.model';
 
 export async function fillDb(connection: Connection) {
 	let movieRepository: Repository<MovieModel> =
@@ -30,6 +33,8 @@ export async function fillDb(connection: Connection) {
 		connection.getRepository(PersonModel);
 	let genreRepository: Repository<GenreModel> =
 		connection.getRepository(GenreModel);
+	let favouritesRepository: Repository<FavouritesModel> =
+		connection.getRepository(FavouritesModel);
 
 	await connection.query('TRUNCATE TABLE "movies" CASCADE');
 	await connection.query('TRUNCATE TABLE "persons" CASCADE');
@@ -40,6 +45,7 @@ export async function fillDb(connection: Connection) {
 	await personRepository.save([person1, person2, person3, person4]);
 	await roleRepository.save([role1, role2, role3, role4]);
 	await movieRepository.save([movie1, movie2, movie3]);
+	await favouritesRepository.save([favourites1, favourites2]);
 }
 
 export async function emptyDb(connection: Connection) {

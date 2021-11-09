@@ -29,7 +29,7 @@ with auth/OAuth and movie management features.
   - [x] Get film details
   - [x] Update a film
   - [x] Delete a film
-  - [ ] Add/Remove film to/from favourites
+  - [x] Add/Remove film to/from favourites
   - [ ] Import/Export films in csv format
     
 ## Non-functional requirements

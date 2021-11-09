@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { GenreModel } from '../genres/genre.model';
 import { PersonToFilmModel } from './person-to-film.model';
+import { FavouritesModel } from '../favourites/favourites.model';
 
 @Entity('movies')
 export class MovieModel implements Movie {
@@ -53,4 +54,8 @@ export class MovieModel implements Movie {
 	@Column({ type: 'uuid', name: 'user_id' })
 	@Index()
 	readonly userId: string;
+
+	@OneToMany(() => FavouritesModel, (favourites) => favourites.movie)
+	@JoinColumn({ referencedColumnName: 'movie_id' })
+	readonly favourites?: FavouritesModel[];
 }
