@@ -22,7 +22,6 @@ export class MoviesStorageAdapter {
 	}
 
 	async search(params: IMovieSearch) {
-		console.log(params);
 		const query = await this.movieRepository
 			.createQueryBuilder('movie')
 			.select();
