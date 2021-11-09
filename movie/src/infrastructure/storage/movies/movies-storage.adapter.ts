@@ -21,8 +21,34 @@ export class MoviesStorageAdapter {
 		);
 	}
 
-	search(params: IMovieSearch) {
-		return this.movieRepository.find({ where: params });
+	async search(params: IMovieSearch) {
+		console.log(params);
+		const query = await this.movieRepository
+			.createQueryBuilder('movie')
+			.select();
+		if (params.title) {
+			query.andWhere("upper(title) LIKE upper('%' || :title || '%')", {
+				title: params.title,
+			});
+		}
+		if (params.genre) {
+			query
+				.leftJoin('movie.genres', 'genres')
+				.andWhere("upper(genres.name) LIKE upper('%' || :genre || '%')", {
+					genre: params.genre,
+				});
+		}
+		if (params.releaseDateBefore) {
+			query.andWhere('movie.release_date < :before', {
+				before: params.releaseDateBefore,
+			});
+		}
+		if (params.releaseDateAfter) {
+			query.andWhere('movie.release_date > :after', {
+				after: params.releaseDateAfter,
+			});
+		}
+		return query.getMany();
 	}
 
 	async create(payload: IMovieCreate) {

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../src/app.module';
 import { emptyDb, fillDb } from './fill-db';
 import { Connection, getConnectionManager } from 'typeorm';
 import typeormConfig = require('../src/config/typeorm.config');
@@ -60,7 +60,7 @@ describe('Movie api integration', () => {
 				.set('Authorization', token)
 				.expect(200)
 				.expect(function (res) {
-					expect(res.body.length).toEqual(2);
+					expect(res.body.length).toEqual(3);
 				});
 		});
 		it('/movies (POST)', () => {
@@ -102,11 +102,70 @@ describe('Movie api integration', () => {
 					expect(res.body.userId).toEqual(parseJwt(token).sub);
 				});
 		});
+
+		it('/movies search by title (get)', () => {
+			const param = 'gree';
+			return request(app.getHttpServer())
+				.get('/movies')
+				.set('Authorization', token)
+				.query(`title=${param}`)
+				.expect(200)
+				.expect(function (res) {
+					expect(res.body.length).toEqual(2);
+					expect(res.body.every((item) => item.title.includes(param)));
+				});
+		});
+
+		it('/movies search by genre (get)', () => {
+			const param = 'action';
+			return request(app.getHttpServer())
+				.get('/movies')
+				.set('Authorization', token)
+				.query(`genre=${param}`)
+				.expect(200)
+				.expect(function (res) {
+					expect(res.body.length).toEqual(2);
+				});
+		});
+
+		it('/movies filter by releaseDateBefore (get)', () => {
+			const param = '2020-05-14T10:23:23.568Z';
+			return request(app.getHttpServer())
+				.get('/movies')
+				.set('Authorization', token)
+				.query(`releaseDateBefore=${param}`)
+				.expect(200)
+				.expect(function (res) {
+					expect(res.body.length).toEqual(2);
+					expect(
+						res.body.every(
+							(item) => new Date(item.releaseDate) < new Date(param),
+						),
+					).toBeTruthy();
+				});
+		});
+
+		it('/movies filter by releaseDateAfter (get)', () => {
+			const param = '2020-05-14T10:23:23.568Z';
+			return request(app.getHttpServer())
+				.get('/movies')
+				.set('Authorization', token)
+				.query(`releaseDateAfter=${param}`)
+				.expect(200)
+				.expect(function (res) {
+					expect(res.body.length).toEqual(1);
+					expect(
+						res.body.every(
+							(item) => new Date(item.releaseDate) > new Date(param),
+						),
+					).toBeTruthy();
+				});
+		});
 	});
 });
 
 function parseJwt(token) {
-	var base64Payload = token.split('.')[1];
-	var payload = Buffer.from(base64Payload, 'base64');
+	let base64Payload = token.split('.')[1];
+	let payload = Buffer.from(base64Payload, 'base64');
 	return JSON.parse(payload.toString());
 }

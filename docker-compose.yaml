@@ -43,7 +43,7 @@ services:
     volumes:
       - ./movie:/usr/src/app
     command: bash -c "npm run typeorm:cli -- migration:run && npm run start:dev"
-    #    command: bash -c "npm run test:functional"
+#    command: bash -c "npm run typeorm:cli -- migration:run && npm run test:integration"
     depends_on:
       - postgres-movie
       - redis

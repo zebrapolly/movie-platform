@@ -22,7 +22,7 @@ with auth/OAuth and movie management features.
     * genre 
     * synopsis
   - [x] The film should have a reference to the user who created it
-  - [ ] Get films with custom filters
+  - [x] Get films with custom filters
     * title 
     * release date 
     * genre

@@ -1,7 +1,19 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsDateString, IsOptional, IsString } from 'class-validator';
 
 export class MovieSearchDto {
 	@IsOptional()
 	@IsString()
-	readonly name: string;
+	readonly title: string;
+
+	@IsOptional()
+	@IsDateString()
+	readonly releaseDateBefore: string;
+
+	@IsOptional()
+	@IsDateString()
+	readonly releaseDateAfter: string;
+
+	@IsOptional()
+	@IsString()
+	readonly genre: string;
 }

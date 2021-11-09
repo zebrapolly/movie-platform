@@ -10,9 +10,10 @@ import {
 	UsePipes,
 	ValidationPipe,
 	HttpCode,
+	Query,
 } from '@nestjs/common';
 import { MoviesService } from '../core';
-import { MovieCreateDto, MovieUpdateDto } from './dto';
+import { MovieCreateDto, MovieSearchDto, MovieUpdateDto } from './dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { AuthUser } from './jwt.auth-user.decorator';
 
@@ -30,8 +31,9 @@ export class MoviesController {
 
 	@Get()
 	@UseGuards(JwtAuthGuard)
-	findAll() {
-		return this.moviesService.findAll();
+	@UsePipes(new ValidationPipe())
+	findAll(@Query() params: MovieSearchDto) {
+		return this.moviesService.findAll(params);
 	}
 
 	@Get(':id')

@@ -1,5 +1,4 @@
 import * as faker from 'faker';
-import { MovieModel } from '../src/infrastructure/storage/movies/movie.model';
 import { GenreModel } from '../src/infrastructure/storage/genres/genre.model';
 import { RoleModel } from '../src/infrastructure/storage/roles/role.model';
 import { PersonModel } from '../src/infrastructure/storage/persons/person.model';
@@ -7,22 +6,22 @@ import { Movie } from '../src/domain';
 
 export const genre1: GenreModel = {
 	id: faker.datatype.uuid(),
-	name: faker.lorem.word(),
+	name: 'Action',
 	isDeleted: false,
 };
 export const genre2: GenreModel = {
 	id: faker.datatype.uuid(),
-	name: faker.lorem.word(),
+	name: 'Comedy',
 	isDeleted: false,
 };
 export const genre3: GenreModel = {
 	id: faker.datatype.uuid(),
-	name: faker.lorem.word(),
+	name: 'Drama',
 	isDeleted: false,
 };
 export const genre4: GenreModel = {
 	id: faker.datatype.uuid(),
-	name: faker.lorem.word(),
+	name: 'Horror',
 	isDeleted: false,
 };
 export const person1: PersonModel = {
@@ -68,9 +67,9 @@ export const role4: RoleModel = {
 
 export const movie1: Movie = {
 	id: faker.datatype.uuid(),
-	title: faker.lorem.word(),
+	title: 'Green Mile',
 	synopsis: faker.lorem.text(),
-	releaseDate: faker.date.past(),
+	releaseDate: new Date('1988-03-22T10:23:23.568Z'),
 	genres: [genre1],
 	people: [
 		{
@@ -84,9 +83,25 @@ export const movie1: Movie = {
 
 export const movie2: Movie = {
 	id: faker.datatype.uuid(),
-	title: faker.lorem.word(),
+	title: 'Green Book',
 	synopsis: faker.lorem.text(),
-	releaseDate: faker.date.past(),
+	releaseDate: new Date('2021-04-15T10:23:23.568Z'),
+	genres: [genre1, genre2],
+	people: [
+		{
+			person: person1,
+			role: role1,
+		},
+	],
+	isDeleted: false,
+	userId: faker.datatype.uuid(),
+};
+
+export const movie3: Movie = {
+	id: faker.datatype.uuid(),
+	title: 'Lion King',
+	synopsis: faker.lorem.text(),
+	releaseDate: new Date('2000-01-11T11:22:24.538Z'),
 	genres: [genre2, genre3],
 	people: [
 		{

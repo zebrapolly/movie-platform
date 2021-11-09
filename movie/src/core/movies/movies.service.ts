@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { MovieUpdateDto } from '../../presentation/dto';
+import { MovieSearchDto, MovieUpdateDto } from '../../presentation/dto';
 import { MoviesStorageAdapter } from '../../infrastructure';
 import { IMovieCreate, IMovieCreateInput, IMovieUpdate } from '../../domain';
 
@@ -21,8 +21,18 @@ export class MoviesService {
 		return this.moviesStorage.create(model);
 	}
 
-	findAll() {
-		return this.moviesStorage.search({});
+	findAll(params: MovieSearchDto) {
+		const model = {
+			title: params.title,
+			genre: params.genre,
+			releaseDateAfter: params.releaseDateAfter
+				? new Date(params.releaseDateAfter)
+				: undefined,
+			releaseDateBefore: params.releaseDateBefore
+				? new Date(params.releaseDateBefore)
+				: undefined,
+		};
+		return this.moviesStorage.search(model);
 	}
 
 	findOne(id: string) {
