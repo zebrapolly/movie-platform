@@ -54,6 +54,10 @@ export class MoviesStorageAdapter {
 		return this.movieRepository.save(payload);
 	}
 
+	createMultiple(payload: IMovieCreate[]) {
+		return this.movieRepository.save(payload);
+	}
+
 	async update(id: string, payload: IMovieUpdate) {
 		if (payload.people) {
 			await this.personsToFilmRepository

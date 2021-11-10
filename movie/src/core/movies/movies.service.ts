@@ -68,8 +68,17 @@ export class MoviesService {
 		return csvStream;
 	}
 
-	importCSV(file, userId) {
-		return new Promise((resolve, reject) => {
+	async importCSV(file, userId) {
+		try {
+			const data = await this.transformFile(file, userId);
+			return await this.moviesStorage.createMultiple(data);
+		} catch (err) {
+			throw new BadRequestException(err.message);
+		}
+	}
+
+	transformFile(file, userId) {
+		return new Promise<IMovieCreate[]>((resolve, reject) => {
 			let results = [];
 			const stream = new Readable({
 				encoding: 'utf-8',
@@ -81,21 +90,20 @@ export class MoviesService {
 			let csvStream = csv
 				.parse({ headers: true })
 				.on('data', (data) => {
-					const model = {
+					const model: IMovieCreate = {
 						...data,
 						userId,
 						releaseDate: new Date(data.releaseDate),
 					};
-					results.push(this.moviesStorage.create(model));
+					results.push(model);
 				})
 				.on('end', () => {
-					resolve(Promise.all(results).catch((e) => reject(e)));
+					resolve(results);
 				})
 				.on('error', (err) => {
 					reject(new BadRequestException(err.message));
 				});
 			stream.pipe(csvStream);
-			return csvStream;
 		});
 	}
 }
